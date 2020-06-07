@@ -1,4 +1,41 @@
 .header-container {
     width: 100%;
+    padding: 32px 32px 96px 32px;
     text-align: center;
+    background: #FFD836;
+}
+
+.btn-label {
+    margin: 0;
+    padding: 0;
+    margin-left: 10px;
+}
+
+.header-wrapper {
+    margin: 0 auto;
+    padding: 0px 16px;
+}
+
+.header-title {
+    font-family: 'gooddog_plainregular';
+    text-align: center;
+    width: 100%;
+    padding: 8px;
+}
+
+.header-options {
+    z-index: 2;
+    text-align: right;
+}
+
+@media only screen and (max-width: 600px) {
+    .header-wrapper {
+        width: calc(100% - 64px);
+    }
+}
+
+@media only screen and (min-width: 601px) {
+    .header-wrapper {
+        width: calc(960px - 64px);
+    }
 }

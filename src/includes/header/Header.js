@@ -18,12 +18,21 @@ const Header = () => {
 
     return (
         <>
-                <div className='header-container'>
-                    <span className='btn btn-light' 
+            <div className='header-container'>
+                <div className="header-wrapper">
+                    <div className="header-options">
+                        <span className='btn btn-danger' 
                             onClick={exitButton}>
-                        <i className="fas fa-power-off"></i>
-                    </span>
+                            <i className="fas fa-power-off"></i>
+                            <label className="btn-label">Sair</label>
+                        </span>
+                    </div>
+
+                    <div className="header-title">
+                        <h1>MINHA AGENDA</h1>
+                    </div>
                 </div>
+            </div>
         </>
     )
 }

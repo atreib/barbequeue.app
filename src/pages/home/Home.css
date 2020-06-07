@@ -1,0 +1,58 @@
+.home-container {
+    margin: 32px auto;
+    
+    padding: 0px 32px;
+    border-radius: 8px;
+    text-align: center;
+    
+    margin-top: -64px;
+    z-index: 2;
+    position: absolute;
+}
+
+.cards-wrapper {
+    display: -webkit-flex;
+    display: flex;
+    flex-wrap: wrap;
+}
+
+@media only screen and (max-width: 600px) {
+    .home-container {
+        width: calc(100% - 64px);
+        margin-left: 32px;
+        padding: 8px;
+    }
+
+    .icon {
+        width: 53%;
+        height: auto;
+        margin: 32px;
+    }
+
+    .copyright-icon {
+        width: 50%;
+    }
+}
+
+@media only screen and (min-width: 601px) {
+    .home-container {
+        width: 960px;
+        left: 50%;
+        margin-left: -480px;
+    }
+
+    .icon {
+        width: 13%;
+        height: auto;
+        margin: 32px;
+    }
+
+    .copyright-icon {
+        width: 10%;
+    }
+}
+
+.footer-wrapper {
+    width: 100%;
+    padding: 4px;
+}

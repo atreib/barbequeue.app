@@ -12,3 +12,26 @@ html, body {
     font-size: 16px;
     font-family: Verdana, Arial, Helvetica, sans-serif; 
 }
+
+@font-face {
+    font-family: 'gooddog_plainregular';
+    src: url('/gooddp__-webfont.woff2') format('woff2'),
+         url('/gooddp__-webfont.woff') format('woff');
+    font-weight: normal;
+    font-style: normal;
+}
+
+h1 {
+    font-size: 54px !important;
+    margin: 0 !important;
+}
+
+h2 {
+    font-size: 36px !important;
+    margin: 0 !important;
+}
+
+h3 {
+    font-size: 24px !important;
+    margin: 0 !important;
+}
