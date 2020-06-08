@@ -1,0 +1,149 @@
+.bbq-container {
+    margin: 32px auto;
+    
+    padding: 0px;
+    border-radius: 8px;
+    text-align: center;
+    
+    margin-top: -64px;
+    z-index: 2;
+    position: absolute;
+}
+
+.bbq-container .options-wrapper {
+    width: 100%;
+    text-align: right;
+}
+
+.bbq-container .cards-wrapper {
+    display: -webkit-flex;
+    display: flex;
+    flex-wrap: wrap;
+    background: #fff;
+    box-shadow: 0px 0px 20px rgba(0, 0, 0, .25);
+    border-radius: 4px;
+    padding: 32px;
+    margin: 0 32px;
+}
+
+@media only screen and (max-width: 600px) {
+    .bbq-container .cards-wrapper {
+        margin: 0;
+    }
+
+    .bbq-container {
+        width: calc(100% - 64px);
+        margin-left: 32px;
+        padding: 8px;
+    }
+
+    .bbq-container .icon {
+        width: 53%;
+        height: auto;
+        margin: 32px;
+    }
+
+    .bbq-container .copyright-icon {
+        width: 50%;
+    }
+}
+
+@media only screen and (min-width: 601px) {
+    .bbq-container {
+        width: 960px;
+        left: 50%;
+        margin-left: -480px;
+    }
+
+    .bbq-container .icon {
+        width: 13%;
+        height: auto;
+        margin: 32px;
+    }
+
+    .bbq-container .copyright-icon {
+        width: 10%;
+    }
+}
+
+.bbq-container .footer-wrapper {
+    width: 100%;
+    padding: 0;
+}
+
+@media only screen and (max-width: 600px) {
+    .bbq-container .footer-wrapper img {
+        width: 30% !important;
+    }
+}
+
+.bbq-container .bbq-wrapper {
+    width: 100%; 
+}
+
+.bbq-wrapper .header {
+    width: 100%;
+    padding: 8px;
+    padding-left: 16px;
+    padding-top: 16px;
+    padding-bottom: 32px;
+}
+
+@media only screen and (min-width: 601px) {
+    .bbq-wrapper .header {
+        display: flex;
+    }
+}
+
+.bbq-wrapper .header .esquerda {
+    flex: 2;
+    text-align: left;
+}
+
+.bbq-wrapper .header .esquerda h2 {
+    font-family: 'gooddog_plainregular';
+    font-weight: bold;
+}
+
+.bbq-wrapper .header .esquerda h1 {
+    font-family: cursive;
+    /* font-weight: bold; */
+    font-size: 32px !important;
+}
+
+.bbq-wrapper .header .direita {
+    flex: 1;
+    text-align: right;
+    display: flex;
+    flex-flow: column;
+    align-items: left;
+    justify-content: center;
+}
+
+@media only screen and (max-width: 601px) {
+    .bbq-wrapper .header .direita {
+        text-align: left;
+    }
+
+    .bbq-wrapper .header .esquerda h1 {
+        padding-bottom: 8px;
+    }
+
+    .bbq-wrapper .header .direita h3 {
+        font-size: 16px !important;
+    }
+}
+
+.bbq-wrapper .header .direita h3 {
+    padding: 4px;
+}
+
+.bbq-wrapper .header .direita .fas {
+    color: #FFD836;
+    padding-right: 8px;
+}
+
+.bbq-wrapper .body {
+    width: 100%;
+    padding: 8px;
+}

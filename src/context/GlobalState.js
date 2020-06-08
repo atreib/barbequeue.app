@@ -10,7 +10,8 @@ if (!cacheUserLoggedIn) loggedIn = false;
 // initializing state
 const initialState = {
     isLoggedIn: loggedIn,
-    isLoading: false
+    isLoading: false,
+    pageTitle: ""
 }
 
 // creating our context
@@ -32,11 +33,20 @@ export const GlobalProvider = ({ children }) => {
         });
     };
 
+    function setPageTitle(value) {
+        dispatch({
+            type: 'SET_PAGE_TITLE',
+            payload: value
+        });
+    };
+
     return (<GlobalContext.Provider value={{
         isLoggedIn: state.isLoggedIn,
         isLoading: state.isLoading,
+        pageTitle: state.pageTitle,
         setLoggedIn,
-        setIsLoading
+        setIsLoading,
+        setPageTitle
     }}>
         {children}
     </GlobalContext.Provider>);

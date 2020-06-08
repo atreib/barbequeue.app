@@ -1,20 +1,41 @@
-import React from 'react'
+import React, { useContext, useState, useEffect } from 'react'
 import './Home.css'
 import * as CONSTANTS from '../../config/constants'
-// import { history } from '../../utils/history'
-// import { GlobalContext } from '../../context/GlobalState'
-import BarbequeCard from './Barbeque'
-import { MOCK_BARBEQUE_LIST } from './../../__mocks__/barbeque'
+import { GlobalContext } from '../../context/GlobalState'
+import BarbequeCard from './BarbequeCard'
+import NewBarbequeCard from './NewBarbequeCard'
+// import { MOCK_BARBEQUE_LIST } from './../../__mocks__/barbeque'
 import { Helmet } from 'react-helmet';
+import api from "../../utils/api"
 
 const Home = () => {
+    const [bbqList, setBbqList] = useState([])
+    const { setIsLoading, setPageTitle } = useContext(GlobalContext)
+    const jwt = localStorage.getItem(CONSTANTS.CACHED_TOKEN_KEY);
 
-    var b64DadosUser = localStorage.getItem(CONSTANTS.LOGGED_USER_DATA_KEY);
-    var sdadosUsuario = atob(b64DadosUser);
-    var dadosUsuario = JSON.parse(sdadosUsuario);
+    useEffect(() => {
+        setPageTitle("MINHA AGENDA")
 
-    // testing the universal loader
-    // const { setIsLoading } = useContext(GlobalContext);
+        setIsLoading(true)
+        const loadBbqs = () => {
+            setIsLoading(true);
+            const action = "api/barbeque";
+            const params = { 
+                headers: {
+                    'Authorization': `Bearer ${jwt}`
+                }
+            }
+            api.get(action, params).then((retorno) => {
+                console.log("retorno.data: ", retorno.data)
+                setBbqList(retorno.data)
+                setIsLoading(false)
+            }).catch((err) => {
+                console.log("err.response: ", err.response)
+                setIsLoading(false)
+            })
+        }
+        loadBbqs()
+    }, [])
 
     return (
         <>
@@ -23,13 +44,13 @@ const Home = () => {
             </Helmet>
             <div className="home-container">
                 <div className="cards-wrapper">
+                    <NewBarbequeCard />
                     {
-                        MOCK_BARBEQUE_LIST && 
-                        MOCK_BARBEQUE_LIST.map(bbq => (
+                        bbqList && 
+                        bbqList.map(bbq => (
                             <BarbequeCard content={bbq} />
                         ))
                     }
-                    { !MOCK_BARBEQUE_LIST && <h1>Sem bbqs</h1> }
                 </div>
                 <div className="footer-wrapper">
                     <img src='/logo.png' className="icon" alt="BarbeQUEUE" />

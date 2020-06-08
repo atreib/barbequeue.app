@@ -7,7 +7,7 @@ import { GlobalContext } from '../../context/GlobalState'
 const Header = () => {
     
     // controle de "se está logado"
-    const { setLoggedIn } = useContext(GlobalContext);
+    const { setLoggedIn, pageTitle } = useContext(GlobalContext);
 
     const exitButton = () => {
         localStorage.setItem(CONSTANTS.CACHED_TOKEN_KEY, '');
@@ -29,7 +29,7 @@ const Header = () => {
                     </div>
 
                     <div className="header-title">
-                        <h1>MINHA AGENDA</h1>
+                        <h1>{pageTitle}</h1>
                     </div>
                 </div>
             </div>

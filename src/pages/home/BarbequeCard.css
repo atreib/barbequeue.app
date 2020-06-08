@@ -59,3 +59,13 @@
 .details .fas {
     color: #FFD836;
 }
+
+.card-container:hover {
+    background: #FFD836;
+    color: #000;
+    cursor: pointer;
+}
+
+.card-container:hover .fas {
+    color: #000;
+}

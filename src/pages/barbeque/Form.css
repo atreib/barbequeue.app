@@ -1,4 +1,4 @@
-.login-container {
+.bbq-form-container {
     width: 480px;
     margin: 32px auto;
     margin-bottom: 16px;
@@ -7,24 +7,23 @@
     box-shadow: 0px 0px 20px rgba(0, 0, 0, .25);
     text-align: center;
     background: #fafafa;
+    margin-top: -64px;
 }
 
 @media only screen and (max-width: 600px) {
-    .login-container {
+    .bbq-form-container {
         width: calc(100% - 64px);
         margin-left: 32px;
         padding: 32px;
     }
 }
 
-.login-container .icon {
-    width: 60%;
-    height: auto;
-    margin: 32px;
+.form-text-error {
+    color: red !important;
 }
 
 .copyright-container {
-    width: 100% !important;
+    width: 480px;
     margin: 0 auto;   
 }
 
@@ -33,6 +32,6 @@
     height: 100px;
 }
 
-.form-text-error {
-    color: red !important;
+.bbq-form-container > .options {
+    text-align: right;
 }

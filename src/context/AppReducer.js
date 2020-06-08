@@ -10,6 +10,11 @@ export default (state, action) => {
                 ...state,
                 isLoading: action.payload
             };
+        case 'SET_PAGE_TITLE':
+            return {
+                ...state,
+                pageTitle: action.payload
+            };
         default: return state;
     }
 }

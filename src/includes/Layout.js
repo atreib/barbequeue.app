@@ -10,11 +10,11 @@ const Layout = (props) => {
     return (
         <>
             {isLoading && <ShowLoader />}
-            <div className="theme-container">
-                <div className='theme-header'>
+            <div>
+                <div>
                     { isLoggedIn && <Header /> }
                 </div>
-                <div className='theme-content'>
+                <div>
                     { props.children }
                 </div>
             </div>
