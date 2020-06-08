@@ -11,7 +11,7 @@
 }
 
 .participant-row .check {
-    width: 10%;
+    width: 15%;
     text-align: left;
     display: flex;
     flex-flow: column;
@@ -19,7 +19,7 @@
 }
 
 .participant-row .name {
-    width: 70%;
+    width: 65%;
     display: flex;
     flex-flow: column;
     justify-content: center;
@@ -38,5 +38,6 @@
     margin: 0;
     font-size: 12px;
     margin-right: 8px;
+    border-radius: 50%;
     /* padding-left: 8px; */
 }

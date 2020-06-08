@@ -1,5 +1,6 @@
-import React, { useContext } from 'react'
+import React, { useContext, useState } from 'react'
 import './ParticipantRow.css'
+import './../../utils/checkbox.css'
 import * as CONSTANTS from '../../config/constants'
 import api from "../../utils/api"
 import { GlobalContext } from '../../context/GlobalState'
@@ -9,6 +10,7 @@ const ParticipantRow = (props) => {
     const jwt = localStorage.getItem(CONSTANTS.CACHED_TOKEN_KEY)
     const participant = props.content;
     const updateList = props.sendBack;
+    const [isChecked, setIsChecked] = useState(participant.paid)
 
     const removeParticipant = () => {
         const conf = window.confirm("Você deseja mesmo remover este participante?");
@@ -30,11 +32,25 @@ const ParticipantRow = (props) => {
         }
     }
 
+    const pay = (e) => {
+        const isPaid = !isChecked
+        alert("TODO")
+    }
+
     return (
         <>
             <div className='participant-row'>
                 <div className='check'>
-                    PAGO
+                    <span className="checkboxWrapper">
+                        <input type="checkbox" 
+                                id={participant.id} 
+                                checked={isChecked}
+                                onChange={() => {
+                                    setIsChecked(!isChecked)
+                                }}
+                                onClick={pay} />
+                        <label for={participant.id}>Pago</label>
+                    </span>
                 </div>
                 <div className='name'>
                     <div>
