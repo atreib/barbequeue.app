@@ -18,7 +18,6 @@ const BarbequeDetails = () => {
 
     useEffect(() => {
         setPageTitle("SOBRE O CHURRAS")
-        setIsLoading(true)
 
         const loadBbq = () => {
             setIsLoading(true);
@@ -40,19 +39,61 @@ const BarbequeDetails = () => {
         loadBbq()
     }, [])
 
+    const callbackNewParticipant = (newParticipant) => {
+        const copy = bbqData.participants
+        copy.push(newParticipant)
+        bbqData.participants = copy
+        setBbqData(bbqData)
+    }
+
+    const callBackRemoveParticipant = (removedParticipant) => {
+        const position = bbqData.participants.indexOf(removedParticipant)
+        const copy = bbqData.participants
+        copy.splice(position, 1)
+        bbqData.participants = copy
+        setBbqData(bbqData)
+    }
+
     const btnVoltar = () => {
         history.push('/')
+    }
+
+    const btnRemoveBbq = () => {
+        const remove = window.confirm("Tem certeza que você deseja cancelar este churras?")
+        if (remove) {
+            setIsLoading(true);
+            const action = `api/barbeque/${id}`;
+            const params = { 
+                headers: {
+                    'Authorization': `Bearer ${jwt}`
+                }
+            }
+            api.delete(action, params).then((retorno) => {
+                console.log("retorno.data: ", retorno.data)
+                setIsLoading(false)
+                history.push('/')
+            }).catch((err) => {
+                console.log("err.response: ", err.response)
+                setIsLoading(false)
+            })
+        }
     }
 
     return (
         <>
             <Helmet>
+                <title>BarbeQUEUE - Sobre o churras</title>
                 <style>{'body { background-color: #fafafa !important; }'}</style>
             </Helmet>
             <div className="bbq-container">
                 <div className="cards-wrapper">
-                    <div className="options-wrapper" onClick={btnVoltar}>
-                        <span className="btn btn-danger">Voltar</span>
+                    <div className="options-wrapper">
+                        <span onClick={btnRemoveBbq} className="btn btn-danger">
+                        <i className="fas fa-heart-broken"></i> Cancelar o churras
+                        </span>
+                        <span onClick={btnVoltar} className="btn btn-dark">
+                            <i className="fas fa-undo"></i> Voltar
+                        </span>
                     </div>
                     { bbqData && 
                         <div className="bbq-wrapper">
@@ -89,12 +130,16 @@ const BarbequeDetails = () => {
                                 </div>
                             </div>
                             <div className="body">
-                                <NewParticipantRow />
+                                <NewParticipantRow 
+                                    sendBack={callbackNewParticipant} 
+                                    content={bbqData.id} />
                                 { 
                                     bbqData.participants && 
                                     bbqData.participants.map((participant) => {
                                         return (
-                                            <ParticipantRow content={participant} />
+                                            <ParticipantRow 
+                                                sendBack={callBackRemoveParticipant}
+                                                content={participant} />
                                         )
                                     }) 
                                 }

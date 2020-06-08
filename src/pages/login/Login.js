@@ -8,6 +8,7 @@ import api from "../../utils/api"
 import { history } from '../../utils/history'
 import * as CONSTANTS from '../../config/constants'
 import { GlobalContext } from '../../context/GlobalState'
+import { Helmet } from 'react-helmet'
 
 const Login = () => { 
     
@@ -55,6 +56,9 @@ const Login = () => {
 
     return (
         <>
+            <Helmet>
+                <title>BarbeQUEUE - Entrar</title>
+            </Helmet>
             <div className="login-container">
                 <img src='/logo.png' className="icon" alt="BarbeQUEUE" />
 

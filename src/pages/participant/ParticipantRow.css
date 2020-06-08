@@ -6,30 +6,37 @@
     border-bottom: 1px solid #FFD836;
 }
 
+.participant-row > div {
+    padding: 0 8px;
+}
+
 .participant-row .check {
-    width: 15%;
-    /* flex: 1; */
+    width: 10%;
     text-align: left;
     display: flex;
     flex-flow: column;
-    /* align-items: center; */
     justify-content: center;
 }
 
 .participant-row .name {
-    width: 75%;
-    /* flex: 3; */
+    width: 70%;
     display: flex;
     flex-flow: column;
-    /* align-items: center; */
     justify-content: center;
 }
 
 .participant-row .contribution {
-    width: 10%;
-    /* flex: 1; */
+    width: 20%;
     display: flex;
     flex-flow: column;
-    /* align-items: right; */
     justify-content: center;
+    align-items: flex-end;
+}
+
+.participant-row .btn-remover-part {
+    padding: 2px 8px;
+    margin: 0;
+    font-size: 12px;
+    margin-right: 8px;
+    /* padding-left: 8px; */
 }

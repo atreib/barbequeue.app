@@ -9,13 +9,14 @@ import { history } from '../../utils/history'
 import * as CONSTANTS from '../../config/constants'
 import { GlobalContext } from '../../context/GlobalState'
 import Moment from 'moment'
-import { useParams } from "react-router-dom"
+// import { useParams } from "react-router-dom"
+import { Helmet } from 'react-helmet'
 
 const BarbequeForm = () => { 
     Moment.locale('br');
     const jwt = localStorage.getItem(CONSTANTS.CACHED_TOKEN_KEY);
     const { setIsLoading, setPageTitle } = useContext(GlobalContext);
-    const { id } = useParams();
+    // const { id } = useParams();
 
     const emptyForm = {
         description: "",
@@ -60,6 +61,9 @@ const BarbequeForm = () => {
 
     return (
         <>
+            <Helmet>
+                <title>BarbeQUEUE - Novo churras</title>
+            </Helmet>
             <div className="bbq-form-container">
                 <div className="options">
                     <span class="btn btn-danger" onClick={backButton}>
