@@ -4,13 +4,66 @@ import './../../utils/checkbox.css'
 import * as CONSTANTS from '../../config/constants'
 import api from "../../utils/api"
 import { GlobalContext } from '../../context/GlobalState'
+import PatcherComponent from './../../utils/patcher/patcher'
 
 const ParticipantRow = (props) => {
     const { setIsLoading } = useContext(GlobalContext)
     const jwt = localStorage.getItem(CONSTANTS.CACHED_TOKEN_KEY)
-    const participant = props.content;
-    const updateList = props.sendBack;
-    const [isChecked, setIsChecked] = useState(participant.paid)
+    const participantProp = props.content
+    const updateList = props.sendBack
+    const updateListBudget = props.sendBackPaid
+    const [isChecked, setIsChecked] = useState(participantProp.paid)
+    const [participant, setParticipant] = useState(participantProp)
+    const [patcherParams, setPatchParams] = useState({})
+    const [isPatching, setIsPatching] = useState(false)
+
+    const patcherCancelCallback = () => {
+        setIsPatching(false)
+    }
+
+    const patcherConfirmCallback = (properyUpdated) => {
+        setIsLoading(true)
+
+        const newParticipantData = Object.assign({}, participant, properyUpdated)
+        setParticipant(newParticipantData)
+
+        const idUpdated = participant.id
+        delete newParticipantData.id
+        const action = `api/participants/${idUpdated}`;
+        const params = { 
+            headers: {
+                'Authorization': `Bearer ${jwt}`
+            }
+        }
+        api.put(action, newParticipantData, params).then((retorno) => {
+            setIsPatching(false)
+            setIsLoading(false)
+        }).catch((err) => {
+            console.log("err.response: ", err.response)
+            setIsPatching(false)
+            setIsLoading(false)
+        })
+    }
+
+    const changeParticipantName = () => {
+        setPatchParams({
+            propertyName: "name", 
+            propertyValue: participant.name, 
+            label: "Nome", 
+            type: "text" 
+        })
+        setIsPatching(true)
+    }
+
+    const changeContribution = () => {
+        setPatchParams({
+            propertyName: "contribution", 
+            propertyValue: participant.contribution, 
+            label: "Contribuição", 
+            type: "number" 
+        })
+        setIsPatching(true)
+    }
 
     const removeParticipant = () => {
         const conf = window.confirm("Você deseja mesmo remover este participante?");
@@ -33,12 +86,34 @@ const ParticipantRow = (props) => {
     }
 
     const pay = (e) => {
+        setIsLoading(true);
         const isPaid = !isChecked
-        alert("TODO")
+        const paidData = Object.assign({}, participant, { paid: isPaid })
+        delete paidData.id
+        const id = participant.id
+        const action = `api/participants/${id}`
+        const params = { 
+        headers: {
+                'Authorization': `Bearer ${jwt}`
+            }
+        }
+        api.put(action, paidData, params).then((retorno) => {
+            updateListBudget(participant, isPaid)
+            setIsLoading(false)
+        }).catch((err) => {
+            setIsLoading(false)
+        })
     }
 
     return (
         <>
+            { 
+                isPatching && 
+                <PatcherComponent 
+                    backCallback={patcherCancelCallback}
+                    confirmCallBack={patcherConfirmCallback}
+                    properties={patcherParams} /> 
+            }
             <div className='participant-row'>
                 <div className='check'>
                     <span className="checkboxWrapper">
@@ -49,20 +124,26 @@ const ParticipantRow = (props) => {
                                     setIsChecked(!isChecked)
                                 }}
                                 onClick={pay} />
-                        <label for={participant.id}>Pago</label>
+                        <label htmlFor={participant.id}>Pago</label>
                     </span>
                 </div>
                 <div className='name'>
                     <div>
                         <span onClick={removeParticipant}
-                            class="btn btn-light btn-small btn-remover-part">
-                            <i class="fas fa-times"></i>
+                            className="btn btn-light btn-small btn-remover-part">
+                            <i className="fas fa-times"></i>
                         </span>
-                        {participant.name}
+                        <span className="editable-label"
+                                onClick={changeParticipantName}>
+                            {participant.name}
+                        </span>
                     </div>
                 </div>
                 <div className='contribution'>
-                    R$ {participant.contribution.toFixed(2).replace('.', ',')}
+                    <span className="editable-label"
+                        onClick={changeContribution}>
+                        R$ {participant.contribution.toFixed(2).replace('.', ',')}
+                    </span>
                 </div>
             </div>
         </>

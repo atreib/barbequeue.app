@@ -8,6 +8,7 @@ import { useParams } from "react-router-dom"
 import { history } from '../../utils/history'
 import { ParticipantRow, NewParticipantRow } from './../participant'
 import Moment from 'moment'
+import PatcherComponent from './../../utils/patcher/patcher'
 
 const BarbequeDetails = () => {
     Moment.locale('br');
@@ -15,6 +16,8 @@ const BarbequeDetails = () => {
     const { setIsLoading, setPageTitle } = useContext(GlobalContext)
     const jwt = localStorage.getItem(CONSTANTS.CACHED_TOKEN_KEY);
     const { id } = useParams();
+    const [patcherParams, setPatchParams] = useState({})
+    const [isPatching, setIsPatching] = useState(false)
 
     useEffect(() => {
         setPageTitle("SOBRE O CHURRAS")
@@ -28,7 +31,6 @@ const BarbequeDetails = () => {
                 }
             }
             api.get(action, params).then((retorno) => {
-                console.log("retorno.data: ", retorno.data)
                 setBbqData(retorno.data)
                 setIsLoading(false)
             }).catch((err) => {
@@ -38,6 +40,26 @@ const BarbequeDetails = () => {
         }
         loadBbq()
     }, [])
+
+    const changeDescription = () => {
+        setPatchParams({
+            propertyName: "description", 
+            propertyValue: bbqData.description, 
+            label: "Descrição", 
+            type: "text" 
+        })
+        setIsPatching(true)
+    }
+
+    const changeEventDateTime = () => {
+        setPatchParams({
+            propertyName: "eventDateTime", 
+            propertyValue: bbqData.eventDateTime.substring(0, bbqData.eventDateTime.indexOf('T')), 
+            label: "Dia do churras", 
+            type: "date" 
+        })
+        setIsPatching(true)
+    }
 
     const callbackNewParticipant = (newParticipant) => {
         const copy = bbqData.participants
@@ -52,6 +74,42 @@ const BarbequeDetails = () => {
         copy.splice(position, 1)
         bbqData.participants = copy
         setBbqData(bbqData)
+    }
+
+    const callBackParticipantPaid = (participant, isPaid) => {
+        const position = bbqData.participants.indexOf(participant)
+        const copy = bbqData.participants
+        copy[position].paid = isPaid
+        bbqData.participants = copy
+        setBbqData(bbqData)
+    }
+
+    const patcherBackCallback = () => {
+        setIsPatching(false)
+    }
+
+    const patcherConfirmCallback = (properyUpdated) => {
+        setIsLoading(true)
+
+        const newBbqData = Object.assign({}, bbqData, properyUpdated)
+        setBbqData(newBbqData)
+
+        const idUpdated = bbqData.id
+        delete newBbqData.id
+        const action = `api/barbeque/${idUpdated}`;
+        const params = { 
+            headers: {
+                'Authorization': `Bearer ${jwt}`
+            }
+        }
+        api.put(action, newBbqData, params).then((retorno) => {
+            setIsPatching(false)
+            setIsLoading(false)
+        }).catch((err) => {
+            console.log("err.response: ", err.response)
+            setIsPatching(false)
+            setIsLoading(false)
+        })
     }
 
     const btnVoltar = () => {
@@ -69,7 +127,6 @@ const BarbequeDetails = () => {
                 }
             }
             api.delete(action, params).then((retorno) => {
-                console.log("retorno.data: ", retorno.data)
                 setIsLoading(false)
                 history.push('/')
             }).catch((err) => {
@@ -85,11 +142,17 @@ const BarbequeDetails = () => {
                 <title>BarbeQUEUE - Sobre o churras</title>
                 <style>{'body { background-color: #fafafa !important; }'}</style>
             </Helmet>
+            { isPatching && 
+                <PatcherComponent 
+                    backCallback={patcherBackCallback}
+                    confirmCallBack={patcherConfirmCallback}
+                    properties={patcherParams} /> 
+            }
             <div className="bbq-container">
                 <div className="cards-wrapper">
                     <div className="options-wrapper">
                         <span onClick={btnRemoveBbq} className="btn btn-danger">
-                        <i className="fas fa-heart-broken"></i> Cancelar o churras
+                            <i className="fas fa-heart-broken"></i> Cancelar o churras
                         </span>
                         <span onClick={btnVoltar} className="btn btn-dark">
                             <i className="fas fa-undo"></i> Voltar
@@ -99,8 +162,15 @@ const BarbequeDetails = () => {
                         <div className="bbq-wrapper">
                             <div className="header">
                                 <div className='esquerda'>
-                                    <h2>{ Moment(bbqData.eventDateTime).format('DD/MM') }</h2>
-                                    <h1>{bbqData.description}</h1>
+                                    <h2 className="editable-label"
+                                        onClick={changeEventDateTime}>
+                                        { Moment(bbqData.eventDateTime).format('DD/MM') }
+                                    </h2>
+
+                                    <h1 className="editable-label"
+                                        onClick={changeDescription}>
+                                        {bbqData.description}
+                                    </h1>
                                 </div>
                                 <div className='direita'>
                                     <h3>
@@ -116,9 +186,10 @@ const BarbequeDetails = () => {
                                             bbqData.participants && 
                                             <span> 
                                                 R$ {bbqData.participants.reduce((last, actual) => {
-                                                    last.contribution += actual.contribution
+                                                    if (actual.paid)
+                                                        last.contribution += actual.contribution
                                                     return last;
-                                                }, {contribution: 0})
+                                                }, {contribution: 0, paid: false})
                                                     .contribution
                                                     .toFixed(2)
                                                     .replace('.', ',')} 
@@ -138,6 +209,7 @@ const BarbequeDetails = () => {
                                     bbqData.participants.map((participant) => {
                                         return (
                                             <ParticipantRow 
+                                                sendBackPaid={callBackParticipantPaid}
                                                 sendBack={callBackRemoveParticipant}
                                                 content={participant} />
                                         )
