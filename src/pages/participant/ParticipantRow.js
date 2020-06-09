@@ -12,6 +12,7 @@ const ParticipantRow = (props) => {
     const participantProp = props.content
     const updateList = props.sendBack
     const updateListBudget = props.sendBackPaid
+    const updateListBudgetContribution = props.sendBackContributionUpdate
     const [isChecked, setIsChecked] = useState(participantProp.paid)
     const [participant, setParticipant] = useState(participantProp)
     const [patcherParams, setPatchParams] = useState({})
@@ -25,17 +26,20 @@ const ParticipantRow = (props) => {
         setIsLoading(true)
 
         const newParticipantData = Object.assign({}, participant, properyUpdated)
+        console.log("newParticipantData: ", newParticipantData)
         setParticipant(newParticipantData)
 
         const idUpdated = participant.id
-        delete newParticipantData.id
+        const { id, ...putData } = newParticipantData;
         const action = `api/participants/${idUpdated}`;
         const params = { 
             headers: {
                 'Authorization': `Bearer ${jwt}`
             }
         }
-        api.put(action, newParticipantData, params).then((retorno) => {
+        api.put(action, putData, params).then((retorno) => {
+            if ('contribution' in properyUpdated)
+                updateListBudgetContribution(participant, properyUpdated.contribution)
             setIsPatching(false)
             setIsLoading(false)
         }).catch((err) => {
@@ -90,14 +94,15 @@ const ParticipantRow = (props) => {
         const isPaid = !isChecked
         const paidData = Object.assign({}, participant, { paid: isPaid })
         delete paidData.id
-        const id = participant.id
-        const action = `api/participants/${id}`
+        const { id, ...putData } = paidData;
+        const participantId = participant.id
+        const action = `api/participants/${participantId}`
         const params = { 
         headers: {
                 'Authorization': `Bearer ${jwt}`
             }
         }
-        api.put(action, paidData, params).then((retorno) => {
+        api.put(action, putData, params).then((retorno) => {
             updateListBudget(participant, isPaid)
             setIsLoading(false)
         }).catch((err) => {

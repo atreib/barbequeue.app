@@ -28,9 +28,10 @@ const BarbequeCard = (props) => {
                         <i className="fas fa-dollar-sign"></i>
                         { bbq.participants 
                             && <span> R${bbq.participants.reduce((last, actual) => {
-                                last.contribution += actual.contribution
+                                if (actual.paid)
+                                    last.contribution += actual.contribution
                                 return last;
-                            }, {contribution: 0}).contribution.toFixed(2).replace('.', ',')} </span> }
+                            }, {contribution: 0, paid: false}).contribution.toFixed(2).replace('.', ',')} </span> }
                         { !bbq.participants 
                             && <span> R$0,00 </span> }
                     </div>

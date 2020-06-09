@@ -11,7 +11,7 @@ const Header = () => {
 
     const exitButton = () => {
         localStorage.setItem(CONSTANTS.CACHED_TOKEN_KEY, '');
-        localStorage.setItem(CONSTANTS.LOGGED_USER_DATA_KEY, '');
+        // localStorage.setItem(CONSTANTS.LOGGED_USER_DATA_KEY, '');
         setLoggedIn(false);
         history.push('/login');
     };

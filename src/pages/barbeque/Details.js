@@ -13,6 +13,7 @@ import PatcherComponent from './../../utils/patcher/patcher'
 const BarbequeDetails = () => {
     Moment.locale('br');
     const [bbqData, setBbqData] = useState({})
+    const [totalBudget, setTotalBudget] = useState('0')
     const { setIsLoading, setPageTitle } = useContext(GlobalContext)
     const jwt = localStorage.getItem(CONSTANTS.CACHED_TOKEN_KEY);
     const { id } = useParams();
@@ -31,6 +32,7 @@ const BarbequeDetails = () => {
                 }
             }
             api.get(action, params).then((retorno) => {
+                console.log("initial bbqData: ", bbqData)
                 setBbqData(retorno.data)
                 setIsLoading(false)
             }).catch((err) => {
@@ -40,6 +42,23 @@ const BarbequeDetails = () => {
         }
         loadBbq()
     }, [])
+
+    useEffect(() => {
+        console.log("bbqData: ", bbqData)
+        if (bbqData && bbqData.participants) 
+        {
+            const newBudget = bbqData.participants.reduce((last, actual) => {
+                    if (actual.paid)
+                        last.contribution += actual.contribution
+                    return last;
+                }, {contribution: 0, paid: false})
+                    .contribution
+                    .toFixed(2)
+                    .replace('.', ',')
+            setTotalBudget(newBudget)
+        }
+        
+    }, [bbqData])
 
     const changeDescription = () => {
         setPatchParams({
@@ -62,26 +81,55 @@ const BarbequeDetails = () => {
     }
 
     const callbackNewParticipant = (newParticipant) => {
-        const copy = bbqData.participants
+        const copy = Object.assign([], bbqData.participants)
         copy.push(newParticipant)
-        bbqData.participants = copy
-        setBbqData(bbqData)
+        const aux = Object.assign({}, bbqData, { participants: copy })
+        setBbqData(aux)
     }
 
     const callBackRemoveParticipant = (removedParticipant) => {
-        const position = bbqData.participants.indexOf(removedParticipant)
-        const copy = bbqData.participants
-        copy.splice(position, 1)
-        bbqData.participants = copy
-        setBbqData(bbqData)
+        const findParticipant = bbqData.participants.filter(x => x.id === removedParticipant.id)
+        if (findParticipant) {
+            const position = bbqData.participants.indexOf(findParticipant[0])
+            const copy = Object.assign([], bbqData.participants)
+            copy.splice(position, 1)
+            const aux = Object.assign({}, bbqData, { participants: copy })
+            setBbqData(aux)
+        }
+        else
+        {
+            window.location.reload()
+        }
     }
 
     const callBackParticipantPaid = (participant, isPaid) => {
-        const position = bbqData.participants.indexOf(participant)
-        const copy = bbqData.participants
-        copy[position].paid = isPaid
-        bbqData.participants = copy
-        setBbqData(bbqData)
+        const findParticipant = bbqData.participants.filter(x => x.id === participant.id)
+        if (findParticipant) {
+            const position = bbqData.participants.indexOf(findParticipant[0])
+            const copy = Object.assign([], bbqData.participants)
+            copy[position].paid = isPaid
+            const aux = Object.assign({}, bbqData, { participants: copy })
+            setBbqData(aux)
+        }
+        else
+        {
+            window.location.reload()
+        }
+    }
+
+    const callBackParticipantContriburion = (participant, contribution) => {
+        const findParticipant = bbqData.participants.filter(x => x.id === participant.id)
+        if (findParticipant) {
+            const position = bbqData.participants.indexOf(findParticipant[0])
+            const copy = Object.assign([], bbqData.participants)
+            copy[position].contribution = contribution
+            const aux = Object.assign({}, bbqData, { participants: copy })
+            setBbqData(aux)
+        }
+        else
+        {
+            window.location.reload()
+        }
     }
 
     const patcherBackCallback = () => {
@@ -95,14 +143,14 @@ const BarbequeDetails = () => {
         setBbqData(newBbqData)
 
         const idUpdated = bbqData.id
-        delete newBbqData.id
+        const { id, ...putData } = newBbqData;
         const action = `api/barbeque/${idUpdated}`;
         const params = { 
             headers: {
                 'Authorization': `Bearer ${jwt}`
             }
         }
-        api.put(action, newBbqData, params).then((retorno) => {
+        api.put(action, putData, params).then((retorno) => {
             setIsPatching(false)
             setIsLoading(false)
         }).catch((err) => {
@@ -185,14 +233,7 @@ const BarbequeDetails = () => {
                                         { 
                                             bbqData.participants && 
                                             <span> 
-                                                R$ {bbqData.participants.reduce((last, actual) => {
-                                                    if (actual.paid)
-                                                        last.contribution += actual.contribution
-                                                    return last;
-                                                }, {contribution: 0, paid: false})
-                                                    .contribution
-                                                    .toFixed(2)
-                                                    .replace('.', ',')} 
+                                                R$ {totalBudget} 
                                             </span> 
                                         }
                                         { !bbqData.participants 
@@ -209,7 +250,9 @@ const BarbequeDetails = () => {
                                     bbqData.participants.map((participant) => {
                                         return (
                                             <ParticipantRow 
+                                                key={participant.id}
                                                 sendBackPaid={callBackParticipantPaid}
+                                                sendBackContributionUpdate={callBackParticipantContriburion}
                                                 sendBack={callBackRemoveParticipant}
                                                 content={participant} />
                                         )

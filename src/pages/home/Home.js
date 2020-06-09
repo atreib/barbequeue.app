@@ -2,9 +2,8 @@ import React, { useContext, useState, useEffect } from 'react'
 import './Home.css'
 import * as CONSTANTS from '../../config/constants'
 import { GlobalContext } from '../../context/GlobalState'
-import BarbequeCard from './BarbequeCard'
-import NewBarbequeCard from './NewBarbequeCard'
-// import { MOCK_BARBEQUE_LIST } from './../../__mocks__/barbeque'
+import BarbequeCard from './../barbeque/BarbequeCard'
+import NewBarbequeCard from './../barbeque/NewBarbequeCard'
 import { Helmet } from 'react-helmet';
 import api from "../../utils/api"
 
@@ -26,7 +25,6 @@ const Home = () => {
                 }
             }
             api.get(action, params).then((retorno) => {
-                console.log("retorno.data: ", retorno.data)
                 setBbqList(retorno.data)
                 setIsLoading(false)
             }).catch((err) => {
@@ -48,7 +46,7 @@ const Home = () => {
                     {
                         bbqList && 
                         bbqList.map(bbq => (
-                            <BarbequeCard content={bbq} />
+                            <BarbequeCard key={bbq.id} content={bbq} />
                         ))
                     }
                 </div>
