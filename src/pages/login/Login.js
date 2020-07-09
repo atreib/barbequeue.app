@@ -38,11 +38,7 @@ const Login = () => {
         };
         
         api.post(action, data).then((retorno) => {
-            const { token, username, id } = retorno.data;
-            // const userData = {
-            //     id,
-            //     username
-            // };
+            const { token } = retorno.data;
             localStorage.setItem(CONSTANTS.CACHED_TOKEN_KEY, token);
             // localStorage.setItem(CONSTANTS.LOGGED_USER_DATA_KEY, btoa(JSON.stringify(userData)));
             setLoggedIn(true);
