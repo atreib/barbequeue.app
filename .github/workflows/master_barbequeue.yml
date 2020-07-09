@@ -11,6 +11,9 @@ on:
 jobs:
   build-and-deploy:
     runs-on: windows-latest
+    strategy:
+      matrix:
+        node-version: [12.13]
 
     steps:
     - uses: actions/checkout@master
@@ -18,18 +21,19 @@ jobs:
     - name: Set up Node.js version
       uses: actions/setup-node@v1
       with:
-        node-version: '12.13.0'
+        node-version: ${{ matrix.node-version }}
 
-    - name: npm install, build, and test
-      run: |
-        npm install
-        npm run build --if-present
-        npm run test --if-present
+    - name: Install Packages
+      run: npm install
+
+    - name: Build page
+      run: npm run build
 
     - name: 'Deploy to Azure Web App'
       uses: azure/webapps-deploy@v1
       with:
         app-name: 'barbequeue'
         slot-name: 'production'
+        publish_dir: ./build
         publish-profile: ${{ secrets.AzureAppService_PublishProfile_7bab56360559496ca309b3bb873dfe73 }}
         package: .
